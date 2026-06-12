@@ -54,7 +54,9 @@ export default function MovieDetail({ ratings, onRateMovie, watchlist, onToggleW
   const userRating = ratings?.find(r => r.movieId === movie.id);
   const inWatchlist = watchlist?.some(w => w.movieId === movie.id);
   const cast = movie.credits?.cast?.slice(0, 12) || [];
-  const trailer = movie.videos?.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube');
+  const trailer = movie.videos?.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube') || 
+                  movie.videos?.results?.find(v => v.type === 'Teaser' && v.site === 'YouTube') ||
+                  movie.videos?.results?.find(v => v.site === 'YouTube');
   const similar = movie.similar?.results?.slice(0, 10) || [];
   const director = movie.credits?.crew?.find(c => c.job === 'Director')?.name;
 
@@ -287,21 +289,13 @@ export default function MovieDetail({ ratings, onRateMovie, watchlist, onToggleW
         {trailer && (
           <section id="trailer-section" style={{ marginBottom: '4rem' }}>
             <h3 style={{ fontSize: '1.8rem', marginBottom: '1.5rem', fontWeight: 700 }}>Trailer Resmi</h3>
-            <div style={{ 
-              position: 'relative', width: '100%', paddingTop: '56.25%', 
-              borderRadius: '16px', overflow: 'hidden', backgroundColor: '#000', 
-              border: '1px solid var(--border-color)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' 
-            }}>
+            <div style={{ position: 'relative', paddingTop: '56.25%', borderRadius: '16px', overflow: 'hidden', backgroundColor: '#000', border: '1px solid var(--border-color)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
               <iframe
-                src={`https://www.youtube.com/embed/${trailer.key}?playsinline=1`}
+                src={`https://www.youtube.com/embed/${trailer.key}`}
                 title="Trailer"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-                playsInline
-                style={{ 
-                  position: 'absolute', top: 0, left: 0, 
-                  width: '100%', height: '100%', border: 'none' 
-                }}
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
               />
             </div>
           </section>

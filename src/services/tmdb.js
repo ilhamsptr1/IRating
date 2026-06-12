@@ -39,7 +39,7 @@ export const searchMovies = async (query, lang = 'id-ID') => {
 };
 
 export const fetchMovieDetails = async (movieId, lang = 'id-ID') => {
-  const res = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=${lang}&append_to_response=credits,videos,similar,recommendations&include_video_language=id,en,null`);
+  const res = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=${lang}&append_to_response=credits,videos,similar,recommendations&include_video_language=id,en,ko,ja,hi,te,ta,th,zh,fr,es,de,null`);
   const data = await res.json();
   return data;
 };
