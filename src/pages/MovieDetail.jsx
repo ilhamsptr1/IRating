@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { FiStar, FiClock, FiCalendar, FiArrowLeft, FiBookmark, FiCheck, FiPlayCircle, FiTrash2, FiVideo, FiUser } from 'react-icons/fi';
+import { FiStar, FiClock, FiCalendar, FiArrowLeft, FiBookmark, FiCheck, FiPlayCircle, FiTrash2, FiVideo, FiUser, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { gsap } from 'gsap';
 import { fetchMovieDetails, getImageUrl, getBackdropUrl } from '../services/tmdb';
 import MovieCard from '../components/MovieCard';
@@ -13,6 +13,8 @@ export default function MovieDetail({ ratings, onRateMovie, watchlist, onToggleW
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const contentRef = useRef(null);
+  const castScrollRef = useRef(null);
+  const similarScrollRef = useRef(null);
   const { t, getTmdbLocale } = useLanguage();
 
   const { scrollY } = useScroll();
@@ -248,13 +250,23 @@ export default function MovieDetail({ ratings, onRateMovie, watchlist, onToggleW
         {/* Cast */}
         {cast.length > 0 && (
           <section style={{ marginBottom: '4rem' }}>
-            <h3 style={{ fontSize: '1.8rem', marginBottom: '1.5rem', fontWeight: 700 }}>{t('cast')}</h3>
-            <div style={{ display: 'flex', gap: '1.5rem', overflowX: 'auto', paddingBottom: '1rem', scrollbarWidth: 'none', margin: '0 -2rem', padding: '0 2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.8rem', margin: 0, fontWeight: 700 }}>{t('cast')}</h3>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <motion.button whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.1)' }} whileTap={{ scale: 0.9 }} onClick={() => castScrollRef.current?.scrollBy({ left: -400, behavior: 'smooth' })} style={scrollBtnStyle}>
+                  <FiChevronLeft size={22} />
+                </motion.button>
+                <motion.button whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.1)' }} whileTap={{ scale: 0.9 }} onClick={() => castScrollRef.current?.scrollBy({ left: 400, behavior: 'smooth' })} style={scrollBtnStyle}>
+                  <FiChevronRight size={22} />
+                </motion.button>
+              </div>
+            </div>
+            <div ref={castScrollRef} style={{ display: 'flex', gap: '1.5rem', overflowX: 'auto', paddingBottom: '1rem', scrollbarWidth: 'none', scrollBehavior: 'smooth' }}>
               {cast.map(c => (
                 <motion.div 
                   key={c.id} 
                   whileHover={{ y: -10 }}
-                  style={{ minWidth: '140px', maxWidth: '140px', textAlign: 'center' }}
+                  style={{ minWidth: '140px', maxWidth: '140px', textAlign: 'center', flexShrink: 0 }}
                 >
                   <div style={{ width: '120px', height: '120px', margin: '0 auto 1rem', borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--border-color)' }}>
                     <img
@@ -290,8 +302,18 @@ export default function MovieDetail({ ratings, onRateMovie, watchlist, onToggleW
         {/* Similar */}
         {similar.length > 0 && (
           <section style={{ marginBottom: '2rem' }}>
-            <h3 style={{ fontSize: '1.8rem', marginBottom: '1.5rem', fontWeight: 700 }}>Film Serupa</h3>
-            <div style={{ display: 'flex', gap: '1.5rem', overflowX: 'auto', paddingBottom: '1rem', scrollbarWidth: 'none', margin: '0 -2rem', padding: '0 2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.8rem', margin: 0, fontWeight: 700 }}>Film Serupa</h3>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <motion.button whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.1)' }} whileTap={{ scale: 0.9 }} onClick={() => similarScrollRef.current?.scrollBy({ left: -600, behavior: 'smooth' })} style={scrollBtnStyle}>
+                  <FiChevronLeft size={22} />
+                </motion.button>
+                <motion.button whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.1)' }} whileTap={{ scale: 0.9 }} onClick={() => similarScrollRef.current?.scrollBy({ left: 600, behavior: 'smooth' })} style={scrollBtnStyle}>
+                  <FiChevronRight size={22} />
+                </motion.button>
+              </div>
+            </div>
+            <div ref={similarScrollRef} style={{ display: 'flex', gap: '1.5rem', overflowX: 'auto', paddingBottom: '1rem', scrollbarWidth: 'none', scrollBehavior: 'smooth' }}>
               {similar.map(m => (
                 <div key={m.id} style={{ minWidth: '200px', maxWidth: '200px', flexShrink: 0 }}>
                   <MovieCard movie={m} onRate={onRateMovie} />
@@ -304,3 +326,9 @@ export default function MovieDetail({ ratings, onRateMovie, watchlist, onToggleW
     </div>
   );
 }
+
+const scrollBtnStyle = {
+  width: 38, height: 38, borderRadius: '50%', border: '1px solid var(--border-color)',
+  backgroundColor: 'var(--surface-color)', color: '#fff',
+  display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
+};

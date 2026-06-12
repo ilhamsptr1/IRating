@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { fetchMoviesByGenre } from '../services/tmdb';
 import MovieCard from './MovieCard';
 import { useLanguage } from '../context/LanguageContext';
@@ -9,6 +10,7 @@ export default function PersonalRecommendations({ ratings, onRateMovie, watchlis
   const [topGenres, setTopGenres] = useState([]);
   const [loading, setLoading] = useState(true);
   const { getTmdbLocale } = useLanguage();
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     const generateRecommendations = async () => {
@@ -68,6 +70,9 @@ export default function PersonalRecommendations({ ratings, onRateMovie, watchlis
 
   const isInWatchlist = (movieId) => watchlist?.some(w => w.movieId === movieId);
 
+  const scrollLeft = () => scrollRef.current?.scrollBy({ left: -600, behavior: 'smooth' });
+  const scrollRight = () => scrollRef.current?.scrollBy({ left: 600, behavior: 'smooth' });
+
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem 0' }}>
@@ -82,19 +87,32 @@ export default function PersonalRecommendations({ ratings, onRateMovie, watchlis
 
   return (
     <section style={{ marginBottom: '4rem' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-        <div style={{ width: '6px', height: '32px', background: 'linear-gradient(to bottom, var(--primary-color), #ff9900)', borderRadius: '3px' }} />
-        <h2 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.5px' }}>
-           Rekomendasi Untuk Anda
-        </h2>
-      </div>
-      
-      <p style={{ color: '#999', marginBottom: '1.5rem', fontSize: '1rem' }}>
-        Karena Anda menyukai: <span style={{ color: '#f5c518', fontWeight: 600 }}>{topGenres.join(' • ')}</span>
-      </p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+            <div style={{ width: '6px', height: '32px', background: 'linear-gradient(to bottom, var(--primary-color), #ff9900)', borderRadius: '3px' }} />
+            <h2 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.5px' }}>
+               Rekomendasi Untuk Anda
+            </h2>
+          </div>
+          <p style={{ color: '#999', marginBottom: '0', fontSize: '1rem' }}>
+            Karena Anda menyukai: <span style={{ color: '#f5c518', fontWeight: 600 }}>{topGenres.join(' • ')}</span>
+          </p>
+        </div>
 
-      <div style={{ position: 'relative' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem' }}>
+          <motion.button whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.1)' }} whileTap={{ scale: 0.9 }} onClick={scrollLeft} style={navBtnStyle}>
+            <FiChevronLeft size={24} />
+          </motion.button>
+          <motion.button whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.1)' }} whileTap={{ scale: 0.9 }} onClick={scrollRight} style={navBtnStyle}>
+            <FiChevronRight size={24} />
+          </motion.button>
+        </div>
+      </div>
+
+      <div style={{ position: 'relative', marginTop: '1.5rem' }}>
         <div
+          ref={scrollRef}
           style={{
             display: 'flex', gap: '1.25rem', overflowX: 'auto',
             scrollBehavior: 'smooth', paddingBottom: '1.5rem', paddingTop: '1rem',
@@ -118,3 +136,9 @@ export default function PersonalRecommendations({ ratings, onRateMovie, watchlis
     </section>
   );
 }
+
+const navBtnStyle = {
+  width: 40, height: 40, borderRadius: '50%', border: '1px solid var(--border-color)',
+  backgroundColor: 'var(--surface-color)', color: '#fff',
+  display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
+};
