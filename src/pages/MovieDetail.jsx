@@ -287,13 +287,21 @@ export default function MovieDetail({ ratings, onRateMovie, watchlist, onToggleW
         {trailer && (
           <section id="trailer-section" style={{ marginBottom: '4rem' }}>
             <h3 style={{ fontSize: '1.8rem', marginBottom: '1.5rem', fontWeight: 700 }}>Trailer Resmi</h3>
-            <div style={{ position: 'relative', paddingTop: '56.25%', borderRadius: '16px', overflow: 'hidden', backgroundColor: '#000', border: '1px solid var(--border-color)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
+            <div style={{ 
+              position: 'relative', width: '100%', paddingTop: '56.25%', 
+              borderRadius: '16px', overflow: 'hidden', backgroundColor: '#000', 
+              border: '1px solid var(--border-color)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' 
+            }}>
               <iframe
-                src={`https://www.youtube.com/embed/${trailer.key}`}
+                src={`https://www.youtube.com/embed/${trailer.key}?playsinline=1`}
                 title="Trailer"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
-                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
+                playsInline
+                style={{ 
+                  position: 'absolute', top: 0, left: 0, 
+                  width: '100%', height: '100%', border: 'none' 
+                }}
               />
             </div>
           </section>
